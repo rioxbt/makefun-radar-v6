@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch Radar v6 — pre-token protocols ranked by a fitted, walk-forward-tested implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="skip" href="#board">Skip to the board</a>
+
+<header class="masthead">
+  <div class="mast-row">
+    <div class="mark" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="mast-text">
+      <h1>Launch Radar <b>v6</b></h1>
+      <p class="tagline">Every protocol the snapshot holds that records no token, ranked by the value its own record implies if one were issued — a fitted model, walk-forward tested, with every factor of every score printed and attributable.</p>
+    </div>
+    <dl class="stamp" id="stamp"></dl>
+  </div>
+  <ul class="method" id="method"></ul>
+</header>
+
+<main id="board" tabindex="-1">
+  <section class="controls" aria-label="Filter the board">
+    <label class="field grow">
+      <span>Search</span>
+      <input id="q" type="search" placeholder="protocol, category or chain…" autocomplete="off">
+    </label>
+    <label class="field">
+      <span>Category</span>
+      <select id="category"><option value="all">all categories</option></select>
+    </label>
+    <label class="field">
+      <span>Chain</span>
+      <select id="chain"><option value="all">all chains</option></select>
+    </label>
+    <label class="field">
+      <span>Sort</span>
+      <select id="sort">
+        <option value="rank">rank (implied value)</option>
+        <option value="implied">implied value</option>
+        <option value="tvl">TVL</option>
+        <option value="growth">7-day TVL change</option>
+        <option value="tenure">tenure, no token</option>
+        <option value="name">name</option>
+      </select>
+    </label>
+  </section>
+
+  <nav class="tabs" id="tabs" aria-label="Which rows to show"></nav>
+
+  <p class="counts" id="counts"></p>
+  <p class="bandnote" id="bandnote"></p>
+
+  <div class="table-wrap">
+    <table id="table">
+      <thead>
+        <tr>
+          <th class="num">#</th>
+          <th class="sortable" data-sort="name">Protocol</th>
+          <th>Category</th>
+          <th>Chains</th>
+          <th class="num sortable" data-sort="tvl">TVL</th>
+          <th class="num sortable" data-sort="growth">7d</th>
+          <th class="num sortable" data-sort="tenure">Tenure</th>
+          <th class="num sortable" data-sort="implied">Implied value</th>
+          <th class="num bandcell">90% band</th>
+          <th>Class</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <button id="more" class="more" type="button" hidden>Show more rows</button>
+</main>
+
+<aside id="drawer" class="drawer" hidden aria-live="polite"></aside>
+
+<footer class="foot">
+  <p><b>How a value is built.</b> <span id="formula"></span> Each factor is a fitted weight in <code>lib/calibration.json</code>; the detail view prints every component with the snapshot field that fed it, so a score can be taken apart line by line. The model fits nothing here — it applies coefficients fitted offline by <code>tools/fit-forecast.mjs</code>.</p>
+  <p><b>Where the data is from.</b> One sealed snapshot of DefiLlama's protocol record (as of <span id="asof"></span>), plus a corpus of real launches collected from DexScreener's public API by <code>tools/fetch-dexscreener.mjs</code> to check the model out of sample. DefiLlama's record is not proof: a row says a protocol <i>records no token</i>, never that it has none.</p>
+  <p><b>What this is not.</b> The implied value is this radar's own claim about what a token would be worth if the protocol's record stood as it does; it is not advice, it does not predict whether or when a token is issued, and the farm plans describe activity that may return nothing.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

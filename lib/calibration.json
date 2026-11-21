@@ -1,0 +1,745 @@
+{
+ "format": "makefun-radar-v6/calibration/1",
+ "generated_at_note": "written by tools/fit-forecast.mjs; deterministic, no random split anywhere",
+ "source": {
+  "snapshot_as_of": "2026-11-14",
+  "snapshot_source": "DefiLlama https://api.llama.fi/protocols, fetched 2026-11-14T01:18:33.201Z",
+  "snapshot_protocols": 758,
+  "snapshot_watchlist": 40,
+  "protocols_recording_a_market_cap": 128,
+  "labelled_rows_used": 128,
+  "external_corpus": {
+   "collected": 160,
+   "chains": 19,
+   "used": 154,
+   "dropped": 6
+  }
+ },
+ "model": {
+  "name": "Launch Value Model v6",
+  "form": "log10(implied_usd) = a0 + a1*z(log10 TVL) + b1*z(growth) + b2*z(tenure) + b3*z(breadth), tilts b >= 0",
+  "label": "log10(mcap_usd)",
+  "feature_names": [
+   "log10_tvl",
+   "growth_7d",
+   "log10_tenure_years",
+   "log10_breadth_chains"
+  ],
+  "core_coefficient_standardised": 0.424562,
+  "core_coefficient_per_decade_tvl": 0.499198,
+  "tilt_coefficients_standardised": [
+   0,
+   0,
+   0.030564
+  ],
+  "intercept": 7.041483,
+  "feature_mean": [
+   7.691125,
+   -0.091896,
+   0.4008,
+   0.643337
+  ],
+  "feature_scale": [
+   0.850487,
+   0.080366,
+   0.283639,
+   0.416591
+  ],
+  "sigma_log10": 0.919083,
+  "z_90": 1.644853627,
+  "dispersion": {
+   "note": "log10 of the residual scale as a ridge fit of the same four features, calibrated on held-out residuals inside each training window; a protocol gets its own band, floored at the pooled walk-forward residual scale",
+   "intercept": -0.332444,
+   "coefficients": [
+    -0.054291,
+    0.00628,
+    -0.088013,
+    -0.08858
+   ],
+   "feature_mean": [
+    7.691709,
+    -0.083493,
+    0.447798,
+    0.524573
+   ],
+   "feature_scale": [
+    0.793954,
+    0.096386,
+    0.147107,
+    0.324106
+   ],
+   "drift_sigma_log10": 0.408967,
+   "pooled_sigma_log10": 0.919083,
+   "calibration_factor": 1.435434,
+   "rows_used": 64,
+   "coverage_on_held_out": 0.9063,
+   "floor": 0.25,
+   "ceiling": 1.6
+  },
+  "growth_clip_pct": [
+   -80,
+   200
+  ]
+ },
+ "validation": {
+  "A_value_model": {
+   "fit": "fit A  value model on the sealed snapshot (labelled: protocols recording a market cap)",
+   "labelled_rows": 128,
+   "folds": 9,
+   "walk_forward_mae_log10": 0.6658,
+   "walk_forward_mae_multiple": 4.632,
+   "walk_forward_rmse_log10": 0.8529,
+   "walk_forward_spearman_ic": 0.4013,
+   "walk_forward_r2_vs_naive": 0.1737,
+   "interval_coverage_90": 0.9333,
+   "interval_coverage_90_constant_sigma": 0.9222,
+   "sigma_log10": 0.9191
+  },
+  "A_ablation_tvl_only_walk_forward": {
+   "model": "log10(implied) = a0 + a1*z(log10 TVL) — no tilt terms",
+   "folds": 9,
+   "walk_forward_mae_log10": 0.642,
+   "walk_forward_mae_multiple": 4.385,
+   "walk_forward_spearman_ic": 0.4108,
+   "walk_forward_r2_vs_naive": 0.2019
+  },
+  "A_ablation_slope_forced_to_one": {
+   "model": "log10(implied) = log10(TVL) + mean log10(mcap/tvl) of the training window — slope forced to 1",
+   "folds": 9,
+   "walk_forward_mae_log10": 0.7436,
+   "walk_forward_mae_multiple": 5.541
+  },
+  "B_external_launches": {
+   "fit": "fit B  external check on real DexScreener launches (independent sample)",
+   "labelled_rows": 154,
+   "folds": 9,
+   "walk_forward_mae_log10": 0.5278,
+   "walk_forward_mae_multiple": 3.371,
+   "walk_forward_rmse_log10": 0.6999,
+   "walk_forward_spearman_ic": 0.9021,
+   "walk_forward_r2_vs_naive": 0.7123,
+   "interval_coverage_90": 0.9537,
+   "interval_coverage_90_constant_sigma": 0.9445,
+   "sigma_log10": 0.8474,
+   "corpus_collected": 160,
+   "corpus_chains": [
+    "aptos",
+    "arbitrum",
+    "base",
+    "bsc",
+    "celo",
+    "cronos",
+    "ethereum",
+    "hedera",
+    "ink",
+    "katana",
+    "manta",
+    "mantle",
+    "metis",
+    "near",
+    "pulsechain",
+    "robinhood",
+    "solana",
+    "starknet",
+    "ton"
+   ],
+   "corpus_fetched_at": "2026-11-21T16:50:43.760Z"
+  },
+  "folds_A": [
+   {
+    "train_n": 44,
+    "test_n": 10,
+    "lam_core": 64,
+    "lam_tilt": 64,
+    "train_sigma": 1.0608,
+    "core_per_decade_tvl": 0.2479,
+    "tilts": [
+     0,
+     0.0133,
+     0.0071
+    ],
+    "mae_log10": 0.7163,
+    "mae_multiple": 5.204,
+    "rmse_log10": 0.9639,
+    "spearman_ic": 0.8545,
+    "r2_vs_train_mean": 0.2982,
+    "coverage_90_constant": 0.9,
+    "coverage_90_dispersion": 0.9,
+    "test_window": [
+     "2022-03-10",
+     "2022-11-18"
+    ]
+   },
+   {
+    "train_n": 54,
+    "test_n": 10,
+    "lam_core": 16,
+    "lam_tilt": 64,
+    "train_sigma": 0.9746,
+    "core_per_decade_tvl": 0.5052,
+    "tilts": [
+     0,
+     0,
+     0.021
+    ],
+    "mae_log10": 0.8418,
+    "mae_multiple": 6.948,
+    "rmse_log10": 1.0367,
+    "spearman_ic": 0.2242,
+    "r2_vs_train_mean": 0.1567,
+    "coverage_90_constant": 0.9,
+    "coverage_90_dispersion": 0.9,
+    "test_window": [
+     "2022-11-28",
+     "2023-02-28"
+    ]
+   },
+   {
+    "train_n": 64,
+    "test_n": 10,
+    "lam_core": 0,
+    "lam_tilt": 64,
+    "train_sigma": 0.9752,
+    "core_per_decade_tvl": 0.6304,
+    "tilts": [
+     0,
+     0.0142,
+     0.0337
+    ],
+    "mae_log10": 0.4743,
+    "mae_multiple": 2.981,
+    "rmse_log10": 0.7064,
+    "spearman_ic": 0.6485,
+    "r2_vs_train_mean": 0.464,
+    "coverage_90_constant": 0.9,
+    "coverage_90_dispersion": 0.9,
+    "test_window": [
+     "2023-06-07",
+     "2023-10-31"
+    ]
+   },
+   {
+    "train_n": 74,
+    "test_n": 10,
+    "lam_core": 4,
+    "lam_tilt": 0,
+    "train_sigma": 0.9391,
+    "core_per_decade_tvl": 0.5923,
+    "tilts": [
+     0,
+     0.021,
+     0.0737
+    ],
+    "mae_log10": 0.4938,
+    "mae_multiple": 3.118,
+    "rmse_log10": 0.6783,
+    "spearman_ic": 0.2364,
+    "r2_vs_train_mean": 0.0914,
+    "coverage_90_constant": 1,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2023-11-14",
+     "2024-05-01"
+    ]
+   },
+   {
+    "train_n": 84,
+    "test_n": 10,
+    "lam_core": 4,
+    "lam_tilt": 0.25,
+    "train_sigma": 0.9168,
+    "core_per_decade_tvl": 0.5931,
+    "tilts": [
+     0,
+     0.0057,
+     0.0008
+    ],
+    "mae_log10": 0.6262,
+    "mae_multiple": 4.229,
+    "rmse_log10": 0.7681,
+    "spearman_ic": 0.2848,
+    "r2_vs_train_mean": 0.2307,
+    "coverage_90_constant": 1,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2024-05-28",
+     "2024-10-22"
+    ]
+   },
+   {
+    "train_n": 94,
+    "test_n": 10,
+    "lam_core": 4,
+    "lam_tilt": 1,
+    "train_sigma": 0.894,
+    "core_per_decade_tvl": 0.5791,
+    "tilts": [
+     0,
+     0.0003,
+     0.0613
+    ],
+    "mae_log10": 0.7736,
+    "mae_multiple": 5.937,
+    "rmse_log10": 0.9072,
+    "spearman_ic": 0.4182,
+    "r2_vs_train_mean": 0.0652,
+    "coverage_90_constant": 0.9,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2024-10-29",
+     "2025-04-02"
+    ]
+   },
+   {
+    "train_n": 104,
+    "test_n": 10,
+    "lam_core": 4,
+    "lam_tilt": 0.25,
+    "train_sigma": 0.8954,
+    "core_per_decade_tvl": 0.5594,
+    "tilts": [
+     0,
+     0,
+     0.0568
+    ],
+    "mae_log10": 0.4174,
+    "mae_multiple": 2.615,
+    "rmse_log10": 0.4978,
+    "spearman_ic": 0.9273,
+    "r2_vs_train_mean": 0.5163,
+    "coverage_90_constant": 1,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2025-04-11",
+     "2025-09-30"
+    ]
+   },
+   {
+    "train_n": 114,
+    "test_n": 10,
+    "lam_core": 16,
+    "lam_tilt": 0,
+    "train_sigma": 0.8675,
+    "core_per_decade_tvl": 0.5175,
+    "tilts": [
+     0,
+     0,
+     0.0672
+    ],
+    "mae_log10": 1.095,
+    "mae_multiple": 12.444,
+    "rmse_log10": 1.4191,
+    "spearman_ic": -0.7818,
+    "r2_vs_train_mean": -0.4708,
+    "coverage_90_constant": 0.7,
+    "coverage_90_dispersion": 0.7,
+    "test_window": [
+     "2025-09-30",
+     "2026-03-26"
+    ]
+   },
+   {
+    "train_n": 124,
+    "test_n": 4,
+    "lam_core": 64,
+    "lam_tilt": 0.25,
+    "train_sigma": 0.9383,
+    "core_per_decade_tvl": 0.3337,
+    "tilts": [
+     0,
+     0,
+     0.0452
+    ],
+    "mae_log10": 0.5534,
+    "mae_multiple": 3.576,
+    "rmse_log10": 0.6989,
+    "spearman_ic": 0.8,
+    "r2_vs_train_mean": 0.2112,
+    "coverage_90_constant": 1,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2026-05-04",
+     "2026-08-26"
+    ]
+   }
+  ],
+  "folds_B": [
+   {
+    "train_n": 53,
+    "test_n": 12,
+    "lam_core": 0,
+    "lam_tilt": 0.25,
+    "train_sigma": 0.9945,
+    "core_per_decade_tvl": 1.0688,
+    "tilts": [
+     0.144,
+     0.2239,
+     0.2547
+    ],
+    "mae_log10": 0.393,
+    "mae_multiple": 2.472,
+    "rmse_log10": 0.5167,
+    "spearman_ic": 0.8811,
+    "r2_vs_train_mean": 0.8831,
+    "coverage_90_constant": 1,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2025-07-03T04:20:21.000Z",
+     "2025-09-10T10:19:46.000Z"
+    ]
+   },
+   {
+    "train_n": 65,
+    "test_n": 12,
+    "lam_core": 0,
+    "lam_tilt": 0,
+    "train_sigma": 0.9002,
+    "core_per_decade_tvl": 1.3138,
+    "tilts": [
+     0.1624,
+     0.1659,
+     0.381
+    ],
+    "mae_log10": 0.4209,
+    "mae_multiple": 2.636,
+    "rmse_log10": 0.5935,
+    "spearman_ic": 0.8322,
+    "r2_vs_train_mean": 0.6841,
+    "coverage_90_constant": 0.9167,
+    "coverage_90_dispersion": 0.9167,
+    "test_window": [
+     "2025-09-24T01:26:35.000Z",
+     "2025-12-21T21:47:18.000Z"
+    ]
+   },
+   {
+    "train_n": 77,
+    "test_n": 12,
+    "lam_core": 4,
+    "lam_tilt": 0,
+    "train_sigma": 0.8647,
+    "core_per_decade_tvl": 1.1506,
+    "tilts": [
+     0.1795,
+     0.2165,
+     0.1744
+    ],
+    "mae_log10": 0.2655,
+    "mae_multiple": 1.843,
+    "rmse_log10": 0.3263,
+    "spearman_ic": 0.9231,
+    "r2_vs_train_mean": 0.9152,
+    "coverage_90_constant": 1,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2026-01-05T16:05:12.000Z",
+     "2026-05-21T21:02:16.000Z"
+    ]
+   },
+   {
+    "train_n": 89,
+    "test_n": 12,
+    "lam_core": 0.25,
+    "lam_tilt": 1,
+    "train_sigma": 0.7951,
+    "core_per_decade_tvl": 1.1325,
+    "tilts": [
+     0.1864,
+     0.2232,
+     0.2049
+    ],
+    "mae_log10": 0.7878,
+    "mae_multiple": 6.135,
+    "rmse_log10": 0.8884,
+    "spearman_ic": 0.9161,
+    "r2_vs_train_mean": 0.7756,
+    "coverage_90_constant": 0.8333,
+    "coverage_90_dispersion": 0.9167,
+    "test_window": [
+     "2026-06-05T14:45:25.000Z",
+     "2026-08-16T15:54:06.000Z"
+    ]
+   },
+   {
+    "train_n": 101,
+    "test_n": 12,
+    "lam_core": 16,
+    "lam_tilt": 4,
+    "train_sigma": 0.9326,
+    "core_per_decade_tvl": 0.8796,
+    "tilts": [
+     0.0087,
+     0.0865,
+     0.3021
+    ],
+    "mae_log10": 0.7185,
+    "mae_multiple": 5.23,
+    "rmse_log10": 1.2438,
+    "spearman_ic": 0.9441,
+    "r2_vs_train_mean": 0.4545,
+    "coverage_90_constant": 0.9167,
+    "coverage_90_dispersion": 0.9167,
+    "test_window": [
+     "2026-08-17T01:06:35.000Z",
+     "2026-09-28T12:52:05.000Z"
+    ]
+   },
+   {
+    "train_n": 113,
+    "test_n": 12,
+    "lam_core": 0.25,
+    "lam_tilt": 0,
+    "train_sigma": 0.8472,
+    "core_per_decade_tvl": 0.9957,
+    "tilts": [
+     0.1706,
+     0.2102,
+     0.297
+    ],
+    "mae_log10": 0.7163,
+    "mae_multiple": 5.204,
+    "rmse_log10": 0.8379,
+    "spearman_ic": 0.8462,
+    "r2_vs_train_mean": 0.3424,
+    "coverage_90_constant": 0.9167,
+    "coverage_90_dispersion": 0.9167,
+    "test_window": [
+     "2026-09-30T12:54:08.000Z",
+     "2026-11-03T14:49:14.000Z"
+    ]
+   },
+   {
+    "train_n": 125,
+    "test_n": 12,
+    "lam_core": 1,
+    "lam_tilt": 64,
+    "train_sigma": 0.906,
+    "core_per_decade_tvl": 1.1991,
+    "tilts": [
+     0.0002,
+     0.0808,
+     0.1308
+    ],
+    "mae_log10": 0.4859,
+    "mae_multiple": 3.061,
+    "rmse_log10": 0.7266,
+    "spearman_ic": 0.7972,
+    "r2_vs_train_mean": 0.5481,
+    "coverage_90_constant": 0.9167,
+    "coverage_90_dispersion": 0.9167,
+    "test_window": [
+     "2026-11-04T01:44:32.000Z",
+     "2026-11-19T20:53:29.000Z"
+    ]
+   },
+   {
+    "train_n": 137,
+    "test_n": 12,
+    "lam_core": 0,
+    "lam_tilt": 64,
+    "train_sigma": 0.8819,
+    "core_per_decade_tvl": 1.1934,
+    "tilts": [
+     0.0088,
+     0.1063,
+     0.1246
+    ],
+    "mae_log10": 0.4429,
+    "mae_multiple": 2.773,
+    "rmse_log10": 0.5734,
+    "spearman_ic": 0.979,
+    "r2_vs_train_mean": 0.9093,
+    "coverage_90_constant": 1,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2026-11-20T20:45:13.000Z",
+     "2026-11-21T14:36:16.000Z"
+    ]
+   },
+   {
+    "train_n": 149,
+    "test_n": 5,
+    "lam_core": 0,
+    "lam_tilt": 64,
+    "train_sigma": 0.8542,
+    "core_per_decade_tvl": 1.2471,
+    "tilts": [
+     0,
+     0.1331,
+     0.1116
+    ],
+    "mae_log10": 0.5191,
+    "mae_multiple": 3.304,
+    "rmse_log10": 0.5923,
+    "spearman_ic": 1,
+    "r2_vs_train_mean": 0.8982,
+    "coverage_90_constant": 1,
+    "coverage_90_dispersion": 1,
+    "test_window": [
+     "2026-11-21T15:20:16.000Z",
+     "2026-11-21T16:44:49.000Z"
+    ]
+   }
+  ],
+  "hyper_parameter_choices": [
+   {
+    "lamCore": 64,
+    "lamTilt": 64
+   },
+   {
+    "lamCore": 16,
+    "lamTilt": 64
+   },
+   {
+    "lamCore": 0,
+    "lamTilt": 64
+   },
+   {
+    "lamCore": 4,
+    "lamTilt": 0
+   },
+   {
+    "lamCore": 4,
+    "lamTilt": 0.25
+   },
+   {
+    "lamCore": 4,
+    "lamTilt": 1
+   },
+   {
+    "lamCore": 4,
+    "lamTilt": 0.25
+   },
+   {
+    "lamCore": 16,
+    "lamTilt": 0
+   },
+   {
+    "lamCore": 64,
+    "lamTilt": 0.25
+   }
+  ],
+  "penalty_sensitivity_A": [
+   {
+    "lam_core": 0,
+    "lam_tilt": 0,
+    "mae_log10": 0.6504,
+    "spearman_ic": 0.4256
+   },
+   {
+    "lam_core": 0,
+    "lam_tilt": 4,
+    "mae_log10": 0.6498,
+    "spearman_ic": 0.4269
+   },
+   {
+    "lam_core": 0,
+    "lam_tilt": 16,
+    "mae_log10": 0.6496,
+    "spearman_ic": 0.4229
+   },
+   {
+    "lam_core": 0,
+    "lam_tilt": 64,
+    "mae_log10": 0.6482,
+    "spearman_ic": 0.4175
+   },
+   {
+    "lam_core": 1,
+    "lam_tilt": 0,
+    "mae_log10": 0.6487,
+    "spearman_ic": 0.4391
+   },
+   {
+    "lam_core": 1,
+    "lam_tilt": 4,
+    "mae_log10": 0.649,
+    "spearman_ic": 0.4229
+   },
+   {
+    "lam_core": 1,
+    "lam_tilt": 16,
+    "mae_log10": 0.6488,
+    "spearman_ic": 0.4229
+   },
+   {
+    "lam_core": 1,
+    "lam_tilt": 64,
+    "mae_log10": 0.6474,
+    "spearman_ic": 0.4175
+   },
+   {
+    "lam_core": 4,
+    "lam_tilt": 0,
+    "mae_log10": 0.6457,
+    "spearman_ic": 0.4364
+   },
+   {
+    "lam_core": 4,
+    "lam_tilt": 4,
+    "mae_log10": 0.6471,
+    "spearman_ic": 0.4189
+   },
+   {
+    "lam_core": 4,
+    "lam_tilt": 16,
+    "mae_log10": 0.6467,
+    "spearman_ic": 0.4189
+   },
+   {
+    "lam_core": 4,
+    "lam_tilt": 64,
+    "mae_log10": 0.6453,
+    "spearman_ic": 0.4175
+   },
+   {
+    "lam_core": 16,
+    "lam_tilt": 0,
+    "mae_log10": 0.6428,
+    "spearman_ic": 0.4229
+   },
+   {
+    "lam_core": 16,
+    "lam_tilt": 4,
+    "mae_log10": 0.646,
+    "spearman_ic": 0.431
+   },
+   {
+    "lam_core": 16,
+    "lam_tilt": 16,
+    "mae_log10": 0.6454,
+    "spearman_ic": 0.4256
+   },
+   {
+    "lam_core": 16,
+    "lam_tilt": 64,
+    "mae_log10": 0.6451,
+    "spearman_ic": 0.4148
+   },
+   {
+    "lam_core": 64,
+    "lam_tilt": 0,
+    "mae_log10": 0.6542,
+    "spearman_ic": 0.4377
+   },
+   {
+    "lam_core": 64,
+    "lam_tilt": 4,
+    "mae_log10": 0.6593,
+    "spearman_ic": 0.4404
+   },
+   {
+    "lam_core": 64,
+    "lam_tilt": 16,
+    "mae_log10": 0.659,
+    "spearman_ic": 0.4404
+   },
+   {
+    "lam_core": 64,
+    "lam_tilt": 64,
+    "mae_log10": 0.6589,
+    "spearman_ic": 0.4364
+   }
+  ]
+ }
+}

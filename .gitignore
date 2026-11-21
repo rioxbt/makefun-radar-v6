@@ -1,0 +1,10 @@
+# the program's own output (rebuilt by main.ts; not part of the entry)
+out/
+run2/
+
+# the kit's CLI, kept out of the repository
+.kit-ref/
+
+node_modules/
+*.log
+.DS_Store
